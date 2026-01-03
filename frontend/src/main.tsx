@@ -19,6 +19,7 @@ import HomePage from './pages/home.tsx';
 import PropertyPage from './pages/property.tsx';
 import WelcomePage from './pages/welcome.tsx';
 import VerifyEmailCallbackPage from './pages/verify_email_callback.tsx';
+import Profile from './pages/profile.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -112,6 +113,14 @@ const router = createBrowserRouter([
 				element:
 					<PublicRoot>
 						<ChatBot />
+					</PublicRoot>
+
+			},
+			{
+				path: "/profile",
+				element:
+					<PublicRoot>
+						<Profile />
 					</PublicRoot>
 
 			},
