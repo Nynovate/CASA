@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import ActionButton from "../components/ActionButton";
 import { Link } from "react-router-dom";
 import ContentDivider from "../components/ContentDivider";
+import WaveCanvas from "../components/WavyLines";
 
 const	WelcomePage: React.FC = () => {
 	const	{ t } = useTranslation("welcome");
@@ -14,26 +15,17 @@ const	WelcomePage: React.FC = () => {
 			w-full h-screen"
 		>
 
-			<div className="animate-fade-in
-				absolute"
-				style={{
-					opacity: "0%",
-					animationDelay: "300ms"
-				}}
+			<div className="absolute top-0 left-0
+				blur-xl
+				drop-shadow-xl
+				w-full h-full"
 			>
-				<div className="bg-accent
-					rounded-full
-					flex items-center justify-center
-					blur-3xl
-					animate-random-translation
-					w-100 aspect-square"
-				>
-					<div className="bg-foreground
-						rounded-full
-						w-70 aspect-square"
-					>
-					</div>
-				</div>
+				<WaveCanvas
+					color="var(--color-accent)"
+					waveCount={3}
+					spacing={40}
+					thickness={12}
+				/>
 			</div>
 
 			<div className="flex flex-col items-center justify-center gap-3
@@ -55,13 +47,13 @@ const	WelcomePage: React.FC = () => {
 						animationDelay: "300ms"
 					}}
 				>
-					<h3 className="animate-from-top"
+					<div className="animate-from-top font-inter font-light"
 						style={{
 							animationDelay: "300ms"
 						}}
 					>
 						{ t("header.content") }
-					</h3>
+					</div>
 				</div>
 
 				<div className="animate-fade-in max-w-75 w-full"

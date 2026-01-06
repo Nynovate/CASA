@@ -31,8 +31,6 @@ const SignInPage: React.FC = () => {
 
 
 		try {
-			// const baseUrl: string = p		try {
-			console.log("Here we are");
 			const response = await fetch("/api/auth/login", {
 				method: "POST",
 				headers: {
@@ -49,8 +47,12 @@ const SignInPage: React.FC = () => {
 
 
 				if (response.status === 403) {
-					navigate("/verify_email");
-					throw new Error("Email Verification.");
+					if (errorData.error === "email_not_verified") {
+						navigate("/email-sent");
+					}
+					else if (errorData.error === "email_not_verified") {
+						navigate("/add-phone");
+					}
 				}
 				else if (response.status === 400) {
 					setErrorEmail([t(errorData.message)])
@@ -67,7 +69,6 @@ const SignInPage: React.FC = () => {
 			setErrorEmail([]);
 			setErrorPassword([]);
 			navigate("/home");
-
 		} catch (error) {
 			console.error("Error: ", error);
 		} finally {
@@ -75,8 +76,17 @@ const SignInPage: React.FC = () => {
 		}
 	}
 
+	const	[googleProcessing, setgoogleProcessing] = useState<boolean>(false);
+
+    const triggerGoogleLogin = () => {
+		setgoogleProcessing(true);
+
+		window.location.href = '/api/auth/google';
+		setgoogleProcessing(false);
+    };
+
 	return (
-		<div className="text-background w-full h-screen overflow-y-scroll">
+		<div className="text-background w-full h-screen overflow-y-scroll relative">
 			<div
 				className="flex flex-col items-center justify-center gap-3
 				xl:flex-row
@@ -88,12 +98,12 @@ const SignInPage: React.FC = () => {
 					xl:items-end
 					w-full max-w-100"
 				>
-					<div className="font-bold text-2xl">
-						{t("header.title")}
+					<div className="font-higuen font-bold text-2xl">
+						{ t("header.title") }
 					</div>
 
-					<div className="font-thin text-md opacity-75">
-						{t("header.subtitle", { brand: t("brand.name") })}
+					<div className="font-inter text-md opacity-75">
+						{ t("header.subtitle", { brand: t("brand.name") }) }
 					</div>
 				</div>
 
@@ -118,10 +128,10 @@ const SignInPage: React.FC = () => {
 				>
 					<SimpleInput
 						icon="󰇮"
-						title={t("form.email.label")}
+						title={ t("form.email.label") }
 						name="email"
 						type="email"
-						placeholder={t("form.email.placeholder")}
+						placeholder={ t("form.email.placeholder") }
 						error={errorEmail}
 					/>
 
@@ -130,26 +140,26 @@ const SignInPage: React.FC = () => {
 						w-full"
 					>
 						<PasswordInput
-							title={t("form.password.label")}
+							title={ t("form.password.label") }
 							name="password"
-							placeholder={t("form.password.placeholder")}
-							error={errorPassword}
+							placeholder={ t("form.password.placeholder") }
+							error={ errorPassword }
 						/>
 
-						<Link className="mr-auto" to="/forgot_pass">
+						<Link className="mr-auto" to="/forgot-pass">
 							<span className="hover:underline cursor-pointer font-bold text-[12px]">
-								{t("form.forgotPassword")}
+								{ t("form.forgotPassword") }
 							</span>
 						</Link>
 					</div>
 
 					<div className="mt-2 w-full">
 						<ActionButton
-							title={t("actions.connect")}
+							title={ t("actions.connect") }
 							icon=""
 							icon_place="right"
 							type="submit"
-							processing_action={processSignIn}
+							processing_action={ processSignIn }
 						/>
 					</div>
 
@@ -159,28 +169,29 @@ const SignInPage: React.FC = () => {
 						mask-alpha"
 					>
 						<ContentDivider
-							title={t("actions.or")}
+							title={ t("actions.or") }
 							title_color="var(--color-background)"
 							line_color="var(--color-background)"
 						/>
 					</div>
 
-					{/* <ActionButton
-						title={t("actions.continueWithGoogle")}
+					<ActionButton
+						title={ t("actions.continueWithGoogle") }
 						icon=""
-						type="submit"
-					/> */}
-					<GoogleActionButton />
+						disabled={ false }
+						onClick={ triggerGoogleLogin }
+						processing_action={ googleProcessing }
+					/>
 
 					<div
 						className="flex items-center justify-center gap-1
 						text-[12px]
 						w-full mb-4"
 					>
-						{t("footer.noAccount")}
-						<Link to="/sign_up">
+						{ t("footer.noAccount") }
+						<Link to="/sign-up">
 							<span className="underline cursor-pointer font-bold">
-								{t("footer.signUp")}
+								{ t("footer.signUp") }
 							</span>
 						</Link>
 					</div>

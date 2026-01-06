@@ -3,9 +3,10 @@
 :root {
 	--push: 42px;
 	--push-speed: 0.75s;
-	--fade-speed: 0.75s;
+	--fade-speed: 0.3s;
 	--scale-speed: 1s;
 
+	--color-accent: #E6AC00;
 	--color-foreground: #EEEEEE;
 	--color-highlight: #666666;
 	--color-midtone: #363636;
@@ -13,11 +14,11 @@
 	--color-background: #1E1E1E;
 
 	color-scheme: light dark;
-	font-family: arial;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
+		--color-accent: #FFC107;
 		--color-foreground: #1E1E1E;
 		--color-highlight: #262626;
 		--color-darktone: #666666;
@@ -27,17 +28,19 @@
 
 @theme inline {
 
-	--color-accent: #FFC107;
-
 	--color-light-foreground: #EEEEEE;
 	--color-light-background: #1E1E1E;
 
 
+	--color-accent: var(--color-accent);
 	--color-foreground: var(--color-foreground);
 	--color-highlight: var(--color-highlight);
 	--color-midtone: var(--color-midtone);
 	--color-darktone: var(--color-darktone);
 	--color-background: var(--color-background);
+
+	--shadow-standard: 0px 7px 12px rgba(0,0,0,0.12);
+	--drop-shadow-standard: 0px 7px 12px rgba(0,0,0,0.12);
 
 	--font-inter: "Inter";
 	--font-icon: "Icons";
@@ -170,7 +173,7 @@
 body {
 	background: var(--background);
 	color: var(--foreground);
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
 @keyframes jiggle {

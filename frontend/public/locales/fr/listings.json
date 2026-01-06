@@ -1,0 +1,41 @@
+{
+	"brand": {
+		"name": "CASA"
+	},
+
+	"yes": "Oui",
+	"no": "Non",
+
+	"section": {
+		"listingType": {
+			"rent": "A louer",
+			"sale": "A vendre"
+		},
+
+		"features": {
+			"bedrooms": "Chambres",
+			"bathrooms": "Salle de bains",
+			"area": "Surface",
+			"parking_type": "Stationnement",
+			"water_access": "Eau",
+			"electricity_access": "Courant",
+			"garden_private": "Jardin",
+			"wc_separate": "WC exterieur"
+		},
+
+		"description": {
+			"title": "Description"
+		},
+
+		"quickButtons": {
+			"favorites": "Favoris",
+			"visit": "Planifier une visite"
+		},
+
+		"pictures": {
+			"buttons": {
+				"seeMore": "Voir plus"
+			}
+		}
+	}
+}

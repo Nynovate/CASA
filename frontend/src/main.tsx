@@ -5,6 +5,7 @@ import "./index.css"
 import "./i18n/i18n.ts";
 
 import PublicRoot from './components/PublicRoot.tsx';
+import ProtectedRoute from './components/ProtectedRoot.tsx';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import SignUpPage from './pages/sign_up.tsx';
 import NavBar from './components/NavBar.tsx';
@@ -14,107 +15,85 @@ import ChatBot from './pages/ChatBot.tsx';
 import ForgotPassPage from './pages/forgot_pass.tsx';
 import ResetPassPage from './pages/reset_pass.tsx';
 import AddPhonePage from './pages/add_phone.tsx';
-import VerifyEmailNoticePage from './pages/verify_email_notice.tsx';
 import HomePage from './pages/home.tsx';
 import PropertyPage from './pages/property.tsx';
 import WelcomePage from './pages/welcome.tsx';
-import VerifyEmailCallbackPage from './pages/verify_email_callback.tsx';
-import Profile from './pages/profile.tsx';
+import EmailSentPage from './pages/email_sent.tsx';
+import VerifyEmailPage from './pages/verify_email.tsx';
+import ListingsPage from './pages/listings.tsx';
 
 const router = createBrowserRouter([
 	{
 		element: <MainLayout />,
 		children: [
-			// should be protected
+			// ==========================================
+			// PAGES PUBLIQUES (non-authentifiés uniquement)
+			// ==========================================
 			{
-				path: "/verify-email-notice",
-				element:
-					<PublicRoot>
-						<VerifyEmailNoticePage />
-					</PublicRoot>
-
-			},
-			{
-				path: "/verify-email",
-				element:
-					<PublicRoot>
-						<VerifyEmailCallbackPage />
-					</PublicRoot>
-
-			},
-			{
-				path: "/welcome",
-				element:
-					<PublicRoot>
-						<WelcomePage />
-					</PublicRoot>
-			},
-			{
-				path: "/add-phone",
-				element:
-					<PublicRoot>
-						<AddPhonePage />
-					</PublicRoot>
-
-			},
-			{
-				path: "/reset-pass",
-				element:
-					<PublicRoot>
-						<ResetPassPage />
-					</PublicRoot>
-
-			},
-			{
-				path: "/forgot-pass",
-				element:
-					<PublicRoot>
-						<ForgotPassPage />
-					</PublicRoot>
-
-			},
-
-
-
-			{
-				path: "/home",
-				element:
-					<PublicRoot>
-						<HomePage />
-					</PublicRoot>
-
-			},
-			{
-				path: "/property",
-				element:
-					<PublicRoot>
-						<PropertyPage />
-					</PublicRoot>
-
+				path: "/sign-in",
+				element: <SignInPage />
 			},
 			{
 				path: "/sign-up",
-				element:
-					<PublicRoot>
-						<SignUpPage />
-					</PublicRoot>
-
+				element: <SignUpPage />
 			},
 			{
-				path: "/sign-in",
-				element:
-					<PublicRoot>
-						<SignInPage />
-					</PublicRoot>
+				path: "/forgot-pass",
+				element: <ForgotPassPage />
+			},
+			{
+				path: "/reset-pass",
+				element: <ResetPassPage />
+			},
+			{
+				path: "/welcome",
+				element: <WelcomePage />
+			},
+			{
+				path: "/listings",
+				element: <ListingsPage />
+			},
 
+
+
+			// ==========================================
+			// PAGES DE VÉRIFICATION (semi-protégées)
+			// ==========================================
+			{
+				path: "email-sent",
+				element: <EmailSentPage />
+			},
+			{
+				path: "/verify-email",
+				element: <VerifyEmailPage />
+			},
+			{
+				path: "/add-phone",
+				element: <AddPhonePage />
+			},
+
+			// ==========================================
+			// PAGES PROTÉGÉES (authentifiés uniquement)
+			// ==========================================
+			{
+				path: "/home",
+				element: <HomePage />
+			},
+			{
+				path: "/property",
+				element: <PropertyPage />
 			},
 			{
 				path: "/ai",
-				element:
-					<PublicRoot>
-						<ChatBot />
-					</PublicRoot>
+				element: <ChatBot />
+			},
 
+			// ==========================================
+			// REDIRECTIONS PAR DÉFAUT
+			// ==========================================
+			{
+				path: "/",
+				element: <Navigate to="/home" replace />
 			},
 			{
 				path: "/profile",
@@ -126,12 +105,9 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "*",
-				element:
-					<Navigate to="/sign-in" replace />
-
+				element: <Navigate to="/home" replace />
 			},
 		]
-
 	},
 ]);
 

@@ -4,11 +4,9 @@
 	},
 
 	"header": {
-		"title": "Email verification",
-		"subtitle": "We sent a link to your email to secure and verify your account."
+		"title": "Email Verification",
+		"subtitle": "Please wait while we confirm the validity of your email address."
 	},
 
-	"actions": {
-	"back": "Back to Sign In"
-	}
+	"success": "Your email was verified."
 }

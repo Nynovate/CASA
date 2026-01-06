@@ -5,6 +5,7 @@ import ContentDivider from "../components/ContentDivider";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
+import { useAuthRedirect } from "../hooks/useAuthRedirect";
 
 export type APIResponse = {
 	error: string;
@@ -22,14 +23,7 @@ const SignUpPage: React.FC = () => {
 	const [errorLastName, setErrorLastName] = useState<string[]>([]);
 	const [errorPassword, setErrorPassword] = useState<string[]>([]);
 
-
-	const debugURL = [
-		"https://mock.apidog.com/m1/1162080-1155411-default/register", // 200 Success [OK]
-		"https://mock.apidog.com/m1/1162080-1155411-default/register?apidogResponseId=183293900", // 400 Email Exists [OK]
-		"https://mock.apidog.com/m1/1162080-1155411-default/register?apidogResponseId=156854327", // 400 Phone Exists [OK]
-		"https://mock.apidog.com/m1/1162080-1155411-default/register?apidogResponseId=156281196", // 400 Validation [OK]
-		"https://mock.apidog.com/m1/1162080-1155411-default/register?apidogResponseId=119839537" // 429 Rate Limiting [OK]
-	]
+	useAuthRedirect();
 
 	const handleOnSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -61,11 +55,11 @@ const SignUpPage: React.FC = () => {
 				const errorData = responseData as APIResponse;
 
 				if (errorData.error === "email_exists") {
-					setErrorEmail(["error:" + errorData.message]);
+					setErrorEmail([errorData.message]);
 					throw new Error("Email already in used.");
 				}
 				else if (errorData.error === "phone_exists") {
-					setErrorPhone(["error:" + errorData.message]);
+					setErrorPhone([errorData.message]);
 					throw new Error("Phone already in used.");
 				}
 				else if (errorData.error === "validation_failed") {
@@ -98,12 +92,12 @@ const SignUpPage: React.FC = () => {
 					throw new Error("Invalid Request.");
 				}
 				else if (errorData.error === "rate_limited") {
-					toast.error(t("error:" + errorData.message));
+					toast.error(t(errorData.message));
 					throw new Error("Rate Limited.");
 				}
 			}
 
-			navigate("/verify-email-notice");
+			navigate("/email-sent");
 
 		} catch (error) {
 			console.error("Error: ", error);
@@ -111,6 +105,15 @@ const SignUpPage: React.FC = () => {
 			setProcessSignUp(false);
 		}
 	}
+
+	const	[googleProcessing, setgoogleProcessing] = useState<boolean>(false);
+
+    const triggerGoogleLogin = () => {
+		setgoogleProcessing(true);
+
+		window.location.href = '/api/auth/google';
+		setgoogleProcessing(false);
+    };
 
 	return (
 		<div className="text-background w-full h-screen overflow-y-scroll">
@@ -131,11 +134,11 @@ const SignUpPage: React.FC = () => {
 					xl:items-end
 					w-full max-w-100"
 				>
-					<div className="font-bold text-2xl">
+					<div className="font-higuen font-bold text-2xl">
 						{t("header.title")}
 					</div>
 
-					<div className="font-thin text-md opacity-75">
+					<div className="text-md opacity-75">
 						{t("header.subtitle", { brand: t("brand.name") })}
 					</div>
 				</div>
@@ -237,7 +240,9 @@ const SignUpPage: React.FC = () => {
 					<ActionButton
 						title={t("actions.continueWithGoogle")}
 						icon=""
-						type="submit"
+						type="button"
+						onClick={ triggerGoogleLogin }
+						processing_action={ googleProcessing }
 					/>
 
 					<div
@@ -246,7 +251,7 @@ const SignUpPage: React.FC = () => {
 						w-full mb-4"
 					>
 						{t("footer.alreadyHaveAccount")}
-						<Link to="/sign_in">
+						<Link to="/sign-in">
 							<span className="underline cursor-pointer font-bold">
 								{t("footer.signIn")}
 							</span>
