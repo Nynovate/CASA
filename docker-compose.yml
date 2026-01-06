@@ -88,17 +88,17 @@ services:
   # ==============================================
 
   # Frontend
-  ft_frontend:
-    container_name: ft_frontend
-    image: ft_frontend:hehe
-    build: ./frontend
-    ports:
-      - "3000:80"
-    networks:
-      - frontend-network
-    restart: unless-stopped
-    depends_on:
-      - ft_ai
+  # ft_frontend:
+  #   container_name: ft_frontend
+  #   image: ft_frontend:hehe
+  #   build: ./frontend
+  #   ports:
+  #     - "3000:80"
+  #   networks:
+  #     - frontend-network
+  #   restart: unless-stopped
+  #   depends_on:
+  #     - ft_ai
   # Backend AI Service
   ft_ai: 
     container_name: ft_ai

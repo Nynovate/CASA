@@ -38,9 +38,9 @@ class PostModel(BaseModel):
     post_type: Literal["sale", "rent"] = "sale"
     property_type: Literal['apartment', 'house', 'loft', 'land', 'commercial'] = "apartment"
     description: str = "Beautiful property"
-    price: float = Field(default=100, ge=100)
+    price: float = Field(default=100000, ge=100000)
     zone: str = "Madagascar"
-    surface: Optional[float] = Field(default=0, ge=0)
+    surface: Optional[float] = Field(default=45, gt=0)
     photos: list[str] = []
     features: Optional[list[str]] = None
     tags: Optional[list[str]] = None

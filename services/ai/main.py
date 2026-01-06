@@ -112,3 +112,17 @@ async def deletePost(listingId: str):
     return {
             "success": result
     }
+
+@app.post("/api/index")
+async def update_datas(to_update: PostModel):
+    result = False
+    exist = await chromadb_service.get_one_post_in_collection("posts", to_update.id)
+
+    if not exist:
+        result = await chromadb_service.add_to_collection("posts", to_update)
+    else:
+        result = await chromadb_service.update_in_collection("posts", to_update)
+
+    return {
+            "success": result
+    }

@@ -190,7 +190,21 @@ class ChromadbService:
         filters = datas.get("filters", None)
         result = await self.query_in_collection("posts", search_text, 3, filters)
         return result
-        
+
+    async def get_one_post_in_collection(self, collection_name, specific_ids):
+        target_collection = self.collections.get(collection_name)
+
+        if not target_collection:
+            return False
+        try:
+            data = await target_collection.get(ids=specific_ids)
+            if len(data['ids']) == 0:
+                return False
+        except Exception as e:
+            print(f"Error in getting data inside collection {e}")
+            return False
+        return True
+       
     #================= DEBUG Methods =========================
     async def list_collections(self):
         if self.client:
@@ -220,25 +234,6 @@ class ChromadbService:
         except Exception as e:
             print(f"Error in getting data inside collection {e}")
 
-    async def get_one_post_in_collection(self, collection_name, specific_ids):
-        target_collection = self.collections.get(collection_name)
-
-        if not target_collection:
-            print("Collection not found?")
-            return None
-        try:
-            print("============================================ UNIQUE DATAS ============================================")
-            data = await target_collection.get(ids=specific_ids)
-            if not data['ids']:
-                print(f"No data found for  id: '{specific_ids}'")
-                return 
-            for tmp in data:
-                print(f"I got: {tmp} = {data[tmp]}")
-            
-            print("============================================ END UNIQUE DATAS ============================================")
-
-        except Exception as e:
-            print(f"Error in getting data inside collection {e}")
         
 
 chromadb_service = ChromadbService()
