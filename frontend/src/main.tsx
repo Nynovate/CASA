@@ -23,6 +23,7 @@ import ListingsPage from './pages/listings.tsx';
 import DataProvider from './provider/DataProvider.tsx';
 import Profile from './pages/profile.tsx';
 import Ai from './pages/ai.tsx';
+import Profiles from './pages/profiles.tsx';
 
 const router = createBrowserRouter([
 	{
@@ -80,7 +81,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: "/profile",
-				element: <Profile />
+				element: <Profiles />
 			},
 
 			{

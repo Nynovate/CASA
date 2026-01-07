@@ -25,7 +25,6 @@ const ToggleRole = ({role, setRole} : ToggleRoleProps) => {
             >
                 Seller
             </button>
-
         </div>
     );
 }
