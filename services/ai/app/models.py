@@ -32,6 +32,20 @@ class EmbeddingInfo(BaseModel):
     size: int
 
 #=========== Collection models ============
+class Description(BaseModel):
+    property_type: Literal["villa" , "apartment" , "house" , "land" , "commercial"] = "house"
+    transaction_type: Literal["sale", "rent"] = "sale"
+    title: str = "Hello world"
+    area: float = 200
+    landArea: Optional[float] = None
+    price: float = 1000000
+    zone: str = "tananarivo"
+    condition: Literal["neuf" , "excellent" , "bon" , "a_renover"] = "bon"
+    address: Optional[str] = "Lot Echec et Mat"
+    features: Optional[list[str]] = None
+    yearBuild: Optional[int] = 2025
+    language: Optional[str] = "english"
+
 class PostModel(BaseModel):
     id: str
     title: str = "Hello world"

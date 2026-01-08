@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Chatbot test</title>
+	<link rel="stylesheet" href="style.css">
+	<script src="https://cdn.jsdelivr.net/npm/marked/lib/marked.umd.js"></script>
+	<!-- <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script> -->
+</head>
+
+<body>
+	<div class="chat-container">
+		<h1>Chatbot</h1>
+
+		<!-- Messages Display -->
+		<div id="chat-messages" class="chat-messages">
+			<div class="message bot-message">
+				Hello! Ask me anything you want. I am your test model, no RAG for now, so don't forget to add it 😁
+			</div>
+		</div>
+
+		<!-- Input Area -->
+		<div class="input-area">
+			<input type="text" id="user-input" placeholder="Type your message..." autocomplete="off">
+			<button id="send-btn">Send</button>
+		</div>
+
+		<!-- Loading Indicator -->
+		<div id="loading" class="loading" style="display: none;">
+			Thinking... 🤔
+		</div>
+	</div>
+
+	<script src="script.js"></script>
+</body>
+
+</html>

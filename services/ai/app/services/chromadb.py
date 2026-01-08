@@ -161,8 +161,8 @@ class ChromadbService:
         )
 
         return result
-    
-    async def get_query(self, user_mssg, llm_service):
+
+    def get_parse_prompt(self):
         parse_prompt = """
         You are a search assistant for a real estate app. 
         Analyze the user's request and output a JSON object with:
@@ -182,7 +182,31 @@ class ChromadbService:
         }
         }
         """
-        llm_parse_response = llm_service.generate_response(user_mssg, parse_prompt)
+        return parse_prompt
+
+    def get_generate_text(self):
+        prompt = """
+        You are a search assistant for a real estate app. 
+        Analyze the user's info and output a JSON object with:
+        1. "description": An enhanced description of the infos (ex: Magnifique villa T4 de 250m² nichée dans le quartier prisé d'Ivandry.
+        Ce bien d'exception, construit en 2020, vous séduira par ses prestations haut de gamme : 4 chambres spacieuses, 2 salles de bain modernes, une cuisine entièrement équipée et climatisée.
+        Profitez d'une piscine privée au cœur d'un jardin arboré de 500m².
+        Garage double et gardiennage 24h/24 pour votre sérénité.
+        Une opportunité rare pour les familles recherchant confort et sécurité.) 
+        2. "wordCount": The number of word inside the description
+        3. "alternatives": [
+        {
+            "style": (ex: "concise"),
+            "text": (ex: Villa T4 250m² Ivandry - 4 ch, 2 sdb, piscine, jardin 500m², garage, gardien. État impeccable, construction 2020.)
+        }
+        ]
+        4. "suggestedTitle": a better title for the listing (ex: "Villa T4 de standing avec piscine - Ivandry")
+        5. "keywords": all the keywords found in the user's info to generate a good description
+        """
+        return prompt
+
+    async def get_query(self, user_mssg, llm_service, sys_prompt):
+        llm_parse_response = llm_service.generate_response(user_mssg, sys_prompt)
         datas = self.parse_json(llm_parse_response)
         if not datas:
             datas = {}
@@ -191,7 +215,7 @@ class ChromadbService:
         result = await self.query_in_collection("posts", search_text, 3, filters)
         return result
 
-    async def get_one_post_in_collection(self, collection_name, specific_ids):
+    async def is_post_in_collection(self, collection_name, specific_ids):
         target_collection = self.collections.get(collection_name)
 
         if not target_collection:
@@ -204,7 +228,34 @@ class ChromadbService:
             print(f"Error in getting data inside collection {e}")
             return False
         return True
-       
+    
+    async def get_post_in_collection(self, collection_name, specific_ids):
+        target_collection = self.collections.get(collection_name)
+
+        if not target_collection:
+            return None
+        try:
+            data = await target_collection.get(ids=specific_ids)
+            if len(data['ids']) == 0:
+                return None
+            return data
+        except Exception as e:
+            print(f"Error in getting data inside collection {e}")
+            return None
+
+    async def add_context_to_query(self, collection_name, query, context):
+        to_add = await self.get_post_in_collection(collection_name, context)
+
+        if not to_add:
+            return query
+        query['ids'][0].append(to_add['ids'][0])
+        query['metadatas'][0].append(to_add['metadatas'][0])
+        query['documents'][0].append(to_add['documents'][0])
+
+        if 'distances' in query and query['distances']:
+            query['distances'][0].append(0.0)
+        return query
+
     #================= DEBUG Methods =========================
     async def list_collections(self):
         if self.client:

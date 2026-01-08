@@ -97,7 +97,12 @@ llm_service = LLMService()
 @app.post("/api/chat")
 async def chatbot(text: RequestChat):
     user_mssg = text.message
-    chroma_reply = await chromadb_service.get_query(user_mssg, llm_service)
+    context = text.context
+    sys_prompt = chromadb_service.get_parse_prompt()
+
+    chroma_reply = await chromadb_service.get_query(user_mssg, llm_service, sys_prompt)
+    chroma_reply = await chromadb_service.add_context_to_query("posts", chroma_reply, context)
+
     formated = format_chroma_response(user_mssg, chroma_reply)
     llm_response = llm_service.generate_response(formated, llm_service.generate_rules())
     return ResponseChat(
@@ -109,20 +114,32 @@ async def chatbot(text: RequestChat):
 async def deletePost(listingId: str):
     result = await chromadb_service.remove_data_from_collection("posts", listingId)
 
+    if result:
+        return {
+             "success": result,
+             "listingId": listingId,
+             "message": "post deleted"
+        }
     return {
-            "success": result
+            "error": "index not found",
+            "message": "listingId not indexed in database"
     }
 
 @app.post("/api/index")
 async def update_datas(to_update: PostModel):
     result = False
-    exist = await chromadb_service.get_one_post_in_collection("posts", to_update.id)
+    exist = await chromadb_service.is_post_in_collection("posts", to_update.id)
 
     if not exist:
         result = await chromadb_service.add_to_collection("posts", to_update)
     else:
         result = await chromadb_service.update_in_collection("posts", to_update)
 
+    if result:
+        return {
+                "success": result
+        }
     return {
-            "success": result
+            "error": "failed to update database",
+            "message": "failed to update database"
     }

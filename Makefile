@@ -48,3 +48,10 @@ status:
 dev: build
 	@echo "🔧 Starting in development mode..."
 	DOCKER_BUILDKIT=0 docker-compose up
+
+status:
+	docker system df
+
+test:
+	DOCKER_BUILDKIT=0 docker-compose up -d ft_ai ft_chromadb ft_frontend
+
