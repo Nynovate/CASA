@@ -38,7 +38,7 @@ async def lifespan(app: FastAPI):
     nb_retry = 20
     interval = 1
 
-    for i in range(nb_retry):
+    for _ in range(nb_retry):
         try:
             await chromadb_service.initRequest()
 
@@ -57,12 +57,12 @@ async def lifespan(app: FastAPI):
             post_type = "sale",
             property_type = "house",
             description = "President House, beautiful, smell money",
-            price = 1000000,
+            price = 80000000,
             zone = "Madagascar",
-            surface = None,
+            surface = 35,
             photos = [],
-            features = ["toilet", "bathroom", "parking"],
-            tags = ["exclusive", "sold", "urgent"]
+            features = [],
+            tags = ["exclusive", "sold"]
         )
         post2 = PostModel(
             id = "momo",
@@ -70,16 +70,15 @@ async def lifespan(app: FastAPI):
             post_type = "sale",
             property_type = "house",
             description = "Horror house, there is ghost here",
-            price = 200,
+            price = 200000000,
             zone = "France",
             surface = 200,
             photos = [],
-            features = ["bathroom", "livingroom"],
+            features = ["toilet", "bathroom", "parking", "kitcken"],
             tags = ["urgent"]
         )
         await chromadb_service.add_to_collection("posts", post1)
         await chromadb_service.add_to_collection("posts", post2)
-        await chromadb_service.get_all_in_collection("posts")
     yield
     
 app = FastAPI(lifespan=lifespan)
@@ -97,12 +96,17 @@ llm_service = LLMService()
 @app.post("/api/chat")
 async def chatbot(text: RequestChat):
     user_mssg = text.message
-    context = text.context
     sys_prompt = chromadb_service.get_parse_prompt(text.language)
+    context = None
+    chroma_reply = None
 
-    chroma_reply = await chromadb_service.get_query(user_mssg, llm_service, sys_prompt)
-    chroma_reply = await chromadb_service.add_context_to_query("posts", chroma_reply, context)
+    if text.context and len(text.context) > 0:
+        context = text.context
 
+    if not context:
+        chroma_reply = await chromadb_service.get_query(user_mssg, llm_service, sys_prompt)
+    else:
+        chroma_reply = await chromadb_service.get_post_in_collection("posts", context)
     formated = format_chroma_response(user_mssg, chroma_reply)
     llm_response = llm_service.generate_response(formated, llm_service.generate_rules())
     return ResponseChat(
@@ -113,16 +117,8 @@ async def chatbot(text: RequestChat):
 @app.delete("/api/index/{listingId}")
 async def deletePost(listingId: str):
     result = await chromadb_service.remove_data_from_collection("posts", listingId)
-
-    if result:
-        return {
-             "success": result,
-             "listingId": listingId,
-             "message": "post deleted"
-        }
     return {
-            "error": "index not found",
-            "message": "listingId not indexed in database"
+            "success": result,
     }
 
 @app.post("/api/index")

@@ -162,7 +162,7 @@ class ChromadbService:
 
         return result
 
-    def get_parse_prompt(self, language: str):
+    def get_parse_prompt(self, language):
         parse_prompt = """
         You are a search assistant for a real estate app. 
         Analyze the user's request and output a JSON object with:
@@ -213,7 +213,7 @@ class ChromadbService:
             datas = {}
         search_text = datas.get("search_text", user_mssg)
         filters = datas.get("filters", None)
-        result = await self.query_in_collection("posts", search_text, 3, filters)
+        result = await self.query_in_collection("posts", search_text, 5, filters)
         return result
 
     async def is_post_in_collection(self, collection_name, specific_ids):
@@ -245,6 +245,8 @@ class ChromadbService:
             return None
 
     async def add_context_to_query(self, collection_name, query, context):
+        if not context:
+            return query
         to_add = await self.get_post_in_collection(collection_name, context)
 
         if not to_add:

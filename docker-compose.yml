@@ -87,7 +87,7 @@ services:
   # AI
   # ==============================================
 
-  Frontend
+  # Frontend test
   ft_frontend:
     container_name: ft_frontend
     image: ft_frontend:hehe

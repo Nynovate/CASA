@@ -20,13 +20,25 @@ class LLMService:
         self.model = config.LLM_MODEL
 
     def format_for_llm(self, text):
-        if not text or not text['ids'] or len(text['ids'][0]) == 0:
+        if not text or not text.get('ids'):
+            return None
+
+        ids = text['ids']
+        docs = text['documents']
+        metas = text['metadatas']
+
+        if len(ids) > 0 and isinstance(ids[0], list):
+            ids = ids[0]
+            docs = docs[0]
+            metas = metas[0]
+
+        if len(ids) == 0:
             return None
 
         formatted_context = ""
-        for i in range(len(text['ids'][0])):
-            doc = text['documents'][0][i]
-            meta = text['metadatas'][0][i]
+        for i in range(len(ids)):
+            doc = docs[i]
+            meta = metas[i]
             formatted_context += f"---\nPOST {i+1}:\n{doc}\nMetadata: {meta}\n"
         
         return formatted_context
@@ -37,10 +49,8 @@ class LLMService:
         RULES:
         1. Use only the provided context.
         2. Use the language the user used to answer
-        3. If context is not related to real estate, before asnwering the question add "The RAG system is active only on real estate, please be aware of my answer, always check if it's correct".
-        4. If context is none, answer with "For now, there is no posts related to your question on the site".
-        5. Always include the price in the summary.
-        6. If there is a lot of POST inside the context, always give a comparaison.
+        3. Always include the price in the summary.
+        4. If there is a lot of POST inside the context, always give a comparaison.
         """
         return rules
 

@@ -49,7 +49,7 @@ dev: build
 	@echo "🔧 Starting in development mode..."
 	DOCKER_BUILDKIT=0 docker-compose up
 
-status:
+moi:
 	docker system df
 
 test:
