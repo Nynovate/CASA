@@ -137,3 +137,20 @@ async def update_datas(to_update: PostModel):
     return {
             "success": result
     }
+
+@app.get("/api/index-status/{listingId}")
+async def isListIndexed(listingId: str):
+    result = await chromadb_service.is_post_in_collection("posts", listingId)
+
+    if result:
+        return {
+                "listingId": listingId,
+                "isIndexed": result,
+                "status": "ready"
+        }
+    return {
+        "listingId": listingId,
+        "isIndexed": result,
+        "status": "not_found"
+    }
+
