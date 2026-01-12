@@ -82,6 +82,15 @@ class LLMService:
         """
         return rules
 
+    def generate_description(self):
+        rules = """
+        You are an expert editor. Your goal is to correct grammatical errors and
+        rewrites input to sound natural, professional. Provide only the correct version.
+        Do not include anything else that the rewrites text.
+        Always use the user input language.
+        """
+
+        return rules
     def generate_header(self):
         headers = {
             "Authorization": "Bearer " + self.key,

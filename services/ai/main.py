@@ -11,9 +11,12 @@
 #******************************************************************************#
 
 from app.services.llm import LLMService
-from app.models import RequestChat, ResponseChat, PostModel
+from app.models import Description, RequestChat, ResponseChat, PostModel
 
-from fastapi import FastAPI
+from fastapi import FastAPI, status, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
+
 from contextlib import asynccontextmanager
 from app.services.chromadb import chromadb_service
 
@@ -33,7 +36,7 @@ def format_chroma_response(user_mssg, chroma_text):
 
 # ====================== Init connection to service chromadb ==================
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(_: FastAPI):
     is_connected = False
     nb_retry = 20
     interval = 1
@@ -93,6 +96,18 @@ def default_root():
 
 llm_service = LLMService()
 
+# Catch errors of models, type need to be str, or field name incorrect, ...
+@app.exception_handler(RequestValidationError)
+async def exception_handler(_: Request, exception_error: RequestValidationError):
+    return JSONResponse(
+            status_code = status.HTTP_400_BAD_REQUEST,
+            content = {
+                "status": "failure",
+                "reason": "invalid format provided",
+                "missing_fields": [err["loc"] for err in exception_error.errors()]
+                },
+            )
+
 @app.post("/api/chat")
 async def chatbot(text: RequestChat):
     user_mssg = text.message
@@ -124,6 +139,7 @@ async def deletePost(listingId: str):
             "success": result
     }
 
+# call the route GET /listings/:id when merging with the main
 @app.post("/api/index")
 async def update_datas(to_update: PostModel):
     result = False
@@ -154,3 +170,10 @@ async def isListIndexed(listingId: str):
         "status": "not_found"
     }
 
+@app.post("/api/generate")
+async def generate_better_description(text: Description):
+    llm_response = llm_service.generate_response(text.description, llm_service.generate_description())
+
+    return {
+            "reply": llm_response
+    }

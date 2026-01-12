@@ -28,28 +28,17 @@ class ResponseChat(BaseModel):
     sources: Optional[ResponseSource] = None
 
 #============= Embedding data =================
-class EmbeddingText(BaseModel):
-    text: str
-
-class EmbeddingInfo(BaseModel):
-    is_successful: bool = False
-    mssg: str
-    size: int
+# class EmbeddingText(BaseModel):
+#     text: str
+#
+# class EmbeddingInfo(BaseModel):
+#     is_successful: bool = False
+#     mssg: str
+#     size: int
 
 #=========== Collection models ============
 class Description(BaseModel):
-    property_type: Literal["villa" , "apartment" , "house" , "land" , "commercial"] = "house"
-    transaction_type: Literal["sale", "rent"] = "sale"
-    title: str = "Hello world"
-    area: float = 200
-    landArea: Optional[float] = None
-    price: float = 1000000
-    zone: str = "tananarivo"
-    condition: Literal["neuf" , "excellent" , "bon" , "a_renover"] = "bon"
-    address: Optional[str] = "Lot Echec et Mat"
-    features: Optional[list[str]] = None
-    yearBuild: Optional[int] = 2025
-    language: Optional[str] = "english"
+    description: str = "Beautiful description"
 
 class PostModel(BaseModel):
     id: str
