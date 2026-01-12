@@ -24,6 +24,7 @@ import DataProvider from './provider/DataProvider.tsx';
 import Profile from './pages/profile.tsx';
 import Ai from './pages/ai.tsx';
 import Profiles from './pages/profiles.tsx';
+import Profile_up from './pages/Profile_up.tsx';
 
 const router = createBrowserRouter([
 	{

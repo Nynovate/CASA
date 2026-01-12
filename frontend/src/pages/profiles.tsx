@@ -129,16 +129,16 @@ const BlockSetting = ({icon , type}) => {
         </div>);
 }
 
-const SettingBloc = () => {
+const SettingBloc = ({edit, pass, logout, profile}) => {
     return (
         <div className="flex flex-col w-full h-[99%] rounded-lg text-white items-center 
         border border-white py-5 justify-between bg-gray-900">
             <div className="flex flex-col w-full h-[95%] items-center">
-                <BlockSetting icon="" type="Edit profile"/>
-                <BlockSetting icon="󰯄" type="Change password"/>
-                <BlockSetting icon="󰗨" type="Delete profile"/>
+                <BlockSetting icon="" type="Edit profile" edit={edit}/>
+                <BlockSetting icon="󰯄" type="Change password" pass={pass}/>
+                <BlockSetting icon="󰗨" type="Delete profile " profile={profile}/>
             </div>
-            <div className="flex flex-col w-full h-[5%] items-center justify-center">
+            <div className="flex flex-col w-full h-[5%] items-center justify-center" logout={logout}>
                 <BlockSetting icon="󰍂" type="Logout"/>
             </div>
         </div>
@@ -155,6 +155,10 @@ const FavoritePost = () => {
 }
 
 const Profiles = () => {
+    const [edit, setEdit] = useState(false);
+    const [pass, setPass] = useState(false);
+    const [profile, setProfile] = useState(false);
+    const [logout, setLogout] = useState(false);
     return (
         <div className="flex flex-col w-screen h-screen justify-between items-center">
             <div className="h-[8%] w-full"></div>
@@ -164,11 +168,11 @@ const Profiles = () => {
                         <StatBlock/>
                     </div>
                     <div className="flex flex-col h-full w-[90%] items-center space-y-2">
-                           <UserPfp/>
+                           <UserPfp edit={edit}/>
                            <FavoritePost/>                  
                     </div>
                     <div className="flex flex-col w-[15%] h-full rounded-lg">
-                            <SettingBloc/>
+                            <SettingBloc edit={edit} pass={pass} profile={profile} logout={logout}/>
                     </div>
             </div>
         </div>
